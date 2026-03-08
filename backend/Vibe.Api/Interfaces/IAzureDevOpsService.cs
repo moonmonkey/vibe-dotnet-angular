@@ -7,5 +7,6 @@ namespace Vibe.Api.Interfaces
     public interface IAzureDevOpsService
     {
         Task<IEnumerable<PrDto>> GetPullRequestsAsync(string project, string repositoryId);
+        Task<IEnumerable<PrDto>> GetPullRequestsByUserAsync(string user);
     }
 }
