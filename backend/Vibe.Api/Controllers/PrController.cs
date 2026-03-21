@@ -22,5 +22,11 @@ namespace Vibe.Api.Controllers
         {
             return await _azureDevOpsService.GetPullRequestsAsync(project, repositoryId);
         }
+
+        [HttpGet("user/{user}")]
+        public async Task<IEnumerable<PrDto>> GetPullRequestsByUser([FromRoute] string user)
+        {
+            return await _azureDevOpsService.GetPullRequestsByUserAsync(user);
+        }
     }
 }

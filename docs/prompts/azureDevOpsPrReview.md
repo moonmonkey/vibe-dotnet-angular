@@ -46,3 +46,6 @@ Tasks:
 
 # Additional instructions:
 - I think the base address in the AzureDevOpsService should be an appsetting, in AzureDevops, add it to the config class too
+
+# Additional instructions:
+- look at the controller project, I wish to have an endpoint which pulls back all the prs from any project for a sepcific user

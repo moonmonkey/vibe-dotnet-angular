@@ -57,6 +57,37 @@ namespace Vibe.Api.Services
             }) ?? Array.Empty<PrDto>();
         }
 
+        public async Task<IEnumerable<PrDto>> GetPullRequestsByUserAsync(string user)
+        {
+            if (string.IsNullOrWhiteSpace(user))
+            {
+                return Array.Empty<PrDto>();
+            }
+
+            // Azure DevOps REST API to search PRs across organization
+            // Uses search criteria: createdBy={user}
+            var encodedUser = Uri.EscapeDataString(user);
+            var url = $"_apis/git/pullrequests?searchCriteria.createdBy={encodedUser}&api-version=7.0";
+
+            var response = await _httpClient.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+
+            using var stream = await response.Content.ReadAsStreamAsync();
+            var result = await JsonSerializer.DeserializeAsync<PullRequestResponse>(stream, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            return result?.Value?.Select(pr => new PrDto
+            {
+                Id = pr.PullRequestId,
+                Title = pr.Title,
+                Description = pr.Description,
+                Status = pr.Status,
+                CreatedBy = pr.CreatedBy?.DisplayName ?? string.Empty
+            }) ?? Array.Empty<PrDto>();
+        }
+
         private class PullRequestResponse
         {
             public List<PullRequest> Value { get; set; }
