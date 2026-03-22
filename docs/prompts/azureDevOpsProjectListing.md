@@ -19,6 +19,8 @@ Feature: Connect to Azure DevOps and list all projects in the organization.
    - Uses injected HttpClient
    - Uses AzureDevOpsConfig for Organization and PersonalAccessToken
    - Calls Azure DevOps REST API to retrieve all projects
+   - Deserialise the API response directly into `AzureDevOpsProjectDto` — do not create intermediate private model classes for this response
+   - Use a private `ProjectListResponse` wrapper with `List<AzureDevOpsProjectDto> Value` to deserialise the paged response
    - Maps response to `AzureDevOpsProjectDto` collection
 
 4. Add endpoint to `PrController` in `Controllers/PrController.cs`:
