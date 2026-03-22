@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Vibe.Api.Dtos;
 using Vibe.Api.Interfaces;
+using Vibe.Api.Models;
 
 namespace Vibe.Api.Services
 {
@@ -86,6 +87,22 @@ namespace Vibe.Api.Services
                 Status = pr.Status,
                 CreatedBy = pr.CreatedBy?.DisplayName ?? string.Empty
             }) ?? Array.Empty<PrDto>();
+        }
+
+        public async Task<IEnumerable<AzureDevOpsProjectDto>> GetProjectsAsync()
+        {
+            var url = "_apis/projects?api-version=7.0";
+
+            var response = await _httpClient.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+
+            using var stream = await response.Content.ReadAsStreamAsync();
+            var result = await JsonSerializer.DeserializeAsync<ApiResponse<AzureDevOpsProjectDto>>(stream, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            return result?.Value ?? new List<AzureDevOpsProjectDto>();
         }
 
         private class PullRequestResponse
