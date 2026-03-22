@@ -28,5 +28,11 @@ namespace Vibe.Api.Controllers
         {
             return await _azureDevOpsService.GetPullRequestsByUserAsync(user);
         }
+
+        [HttpGet("projects")]
+        public async Task<IEnumerable<AzureDevOpsProjectDto>> GetProjects()
+        {
+            return await _azureDevOpsService.GetProjectsAsync();
+        }
     }
 }
