@@ -1,30 +1,30 @@
-# Azure DevOps Project Listing Feature Prompt
+# Feature Prompt: Azure DevOps Project Listing (Backend)
 
-## Tasks Overview
+Feature: Connect to Azure DevOps and list all projects in the organization.
 
-### 1. DTO (Data Transfer Object)
-- Create a DTO for representing the project listing data.
-- Include properties such as ProjectId, ProjectName, ProjectDescription, RepositoryUrl, etc.
+## Tasks
 
-### 2. Service Interface
-- Define an interface for the project listing service.
-- Methods to include:
-  - `IList<ProjectDto> GetProjects();`
-  - `ProjectDto GetProjectById(int projectId);`
+1. Create a DTO in `Dtos/AzureDevOpsProjectDto.cs` with all relevant Azure DevOps project data:
+   - Id (string) — the project ID
+   - Name (string) — the project name
+   - Description (string) — project description
+   - Url (string) — the project URL
+   - State (string) — project state (e.g., "wellFormed", "createPending", "deleted")
+   - Visibility (string) — project visibility (e.g., "public", "private")
 
-### 3. Service Implementation
-- Implement the service interface.
-- Use dependency injection for instantiating the data access layer.
-- Ensure proper error handling and logging.
+2. Add method to `IAzureDevOpsService` in `Services/IAzureDevOpsService.cs`:
+   - Task<IEnumerable<AzureDevOpsProjectDto>> GetProjectsAsync()
 
-### 4. Controller Endpoint
-- Create a controller that handles HTTP requests for project listings.
-- Implement the following endpoints:
-  - `GET /api/projects` - Retrieves a list of projects.
-  - `GET /api/projects/{id}` - Retrieves a project by ID.
+3. Implement the method in `AzureDevOpsService` in `Services/AzureDevOpsService.cs`:
+   - Uses injected HttpClient
+   - Uses AzureDevOpsConfig for Organization and PersonalAccessToken
+   - Calls Azure DevOps REST API to retrieve all projects
+   - Maps response to `AzureDevOpsProjectDto` collection
 
-### 5. Notes
-- Ensure to validate the input and return appropriate HTTP status codes.
-- Consider pagination for the project listing if the number of projects is large.
-- Use Swagger for API documentation.
-- Implement unit tests for the service and controller logic.
+4. Add endpoint to `PrController` in `Controllers/PrController.cs`:
+   - GET /api/pr/projects → returns IEnumerable<AzureDevOpsProjectDto>
+
+## Notes
+- This uses the same `PrController` as the PR listing feature
+- Reuse existing `AzureDevOpsService` and `IAzureDevOpsService`
+- No new service registration needed (already done in prior feature)
