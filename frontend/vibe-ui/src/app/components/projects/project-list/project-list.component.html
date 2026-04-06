@@ -1,0 +1,5 @@
+<div class="project-grid" role="list" aria-label="Azure DevOps Projects">
+    @for (project of projects; track project.id) {
+        <app-project-card [project]="project" role="listitem"></app-project-card>
+    }
+</div>

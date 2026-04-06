@@ -1,0 +1,38 @@
+<div class="projects-page">
+    <h1 class="mat-headline-4">Azure DevOps Projects</h1>
+
+    <button
+        mat-raised-button
+        color="primary"
+        (click)="onLoadProjects()"
+        aria-label="Load Azure DevOps projects"
+    >
+    Load Projects
+    </button>
+
+    <div class="projects-content" aria-live="polite">
+        @if (loading$ | async) {
+            <mat-spinner diameter="48" aria-label="Loading Projects"></mat-spinner>
+        }
+
+        @if ((loaded$ | async) && !(loading$ | async)) {
+            @if (error$ | async) {
+                <mat-card class="status-card">
+                    <mat-card-content>
+                        <mat-icon>error</mat-icon>
+                        <span>Failed to load projects. Please try again later.</span>
+                    </mat-card-content>
+                </mat-card>
+            } @else if ((projects$ | async)?.length === 0) {
+                <mat-card class="status-card">
+                    <mat-card-content>
+                        <mat-icon>info</mat-icon>
+                        <span>No projects found.</span>
+                    </mat-card-content>
+                </mat-card>
+            } @else if (projects$ | async; as projects) {
+                <app-project-list [projects]="projects"></app-project-list>
+            }
+        }
+    </div>
+</div>
